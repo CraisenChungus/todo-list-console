@@ -1,20 +1,9 @@
-# todo-list-console
-Pretty simple console to-do list on Python
-1. Launch file:
-
-```bash
-python todo_list.py
-Available commands:
-
-add — add a task
-
-show — show list of tasks
-
-delete — delete certain task
-
-deleteall — delete all tasks
-
-exit — end the programme
+# Telegram-task-bot
+To-do task telegram bot
+1. Open code, enter your token (that is given by @BotFather) in line 146
+2. Start the code
+3. type /start to your bot in Telegram
+4. Enjoy using it!
 
 
 
