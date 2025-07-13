@@ -1,26 +1,21 @@
-import asyncio #module import
+
 import logging #imports logging for logs in json
-
-from sqlalchemy import update #module import
-
 
 from telegram import (    #whole library import in order to create telegram bot
     Update,  #class Update
     ReplyKeyboardMarkup, #for keyboard
-    InlineKeyboardMarkup, #unused
-    InlineKeyboardButton  #unused
 )
 from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
-# filters — фильтрация сообщений (текст, фото, и т.д.)
-# MessageHandler — обработка обычных сообщений
-# ApplicationBuilder — инициализация асинхронного Telegram-бота
-# CommandHandler — обработка команд (например, /start)
-# ContextTypes — типизация контекста (доступ к bot, user_data и др.)
-# CallbackQueryHandler — обработка нажатий на inline-кнопки
+# filters — filtering messages (text, photos, etc.)
+# MessageHandler — processing regular messages
+# ApplicationBuilder — initialization of an asynchronous Telegram bot
+# CommandHandler — processing commands (e.g., /start)
+# ContextTypes — context typing (access to bot, user_data, etc.)
+# CallbackQueryHandler — processing clicks on inline buttons
 
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',       #logging
     level=logging.INFO
 )
 
@@ -33,18 +28,18 @@ class Task:                                                            # Creatin
         self.user_input = user_input                                   # Says that object user_input in Task gets its value from constructor parameter
 
     def __str__(self):                                                 # Special method that defines how object is converted to string (e.g., when printed)
-        return f"📌 {self.value}\n📅 До: {self.date}\n💬 Комментарий: {self.user_input}" # Nicely formats the task as readable text
+        return f"📌 {self.value}\n📅 Untill: {self.date}\n💬 Comment: {self.user_input}" # Nicely formats the task as readable text
 
 buttons1 = [                                                           #Here, we are creating a variable that is going to contain LIST and will be used as text for buttons
-    ["Дать задачу", "Удалить задачу"],                                 #The buttons themselves; upper block
-    ['Просмотреть задачи', 'Прикольчик']                               #The buttons themselves; lower block
+    ["Set task", "Delete task"],                                 #The buttons themselves; upper block
+    ['Show tasks', 'Feature<3']                               #The buttons themselves; lower block
 
 ]                                                                      #End of the LIST
 firstmenu = ReplyKeyboardMarkup(buttons1, resize_keyboard=True)        #Initializes a keyboard from buttons1; resize_keyboard=True makes buttons fit the screen
 
 
 buttons2 = [                                                           #The same buttons var, but it will be shown only for returning to the main menu
-    ["Главное меню"]                                                   #The button itself
+    ["Main menu"]                                                   #The button itself
 ]
 onlymainmenu = ReplyKeyboardMarkup(buttons2, resize_keyboard=True)     #Initializes a keyboard from buttons2; resize_keyboard=True makes buttons fit the screen
 
@@ -53,29 +48,29 @@ onlymainmenu = ReplyKeyboardMarkup(buttons2, resize_keyboard=True)     #Initiali
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):   #asynced func that will be reacting on command /start
     await context.bot.send_photo(chat_id=update.effective_chat.id, photo="img.png") #Sends an image using the bot's send_photo() method
                                                                                     #await pauses execution until the image is fully sent
-    await context.bot.send_message(chat_id=update.effective_chat.id,text="Здравствуйте, Господин! Я - Чунгусик-тян! Рада вам служить! Пока что я могу только Вас кривлять, Господин. Напишите мне что угодно и я это скажу!", reply_markup=firstmenu)
+    await context.bot.send_message(chat_id=update.effective_chat.id,text="Hello, Master! I am Chungusik-chan! I am glad to serve you! I can write down your task so that you do not forget anything! And I can do not only that <3", reply_markup=firstmenu)
                                                                                      #Line above makes bot send a message
 async def tasking(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_input = update.message.text
     step = context.user_data.get('task_step')
-    if user_input == "Главное меню":
+    if user_input == "Main menu":
         await context.bot.send_photo(chat_id=update.effective_chat.id, photo="img.png")
         await context.bot.send_message(chat_id=update.effective_chat.id,
-                                       text="Здравствуйте, Господин! Я - Чунгусик-тян! Рада вам служить! Я могу записывать ваши задачаи, что бы вы ничего не забыли! Да и не только это могу <3",
+                                       text="Hello, Master! I am Chungusik-chan! I am glad to serve you! I can write down your task so that you do not forget anything! And I can do not only that <3",
                                        reply_markup=firstmenu)
-    if user_input == "Прикольчик":
-        await update.message.reply_text("Я люблю вас, Господин", reply_markup=onlymainmenu)
+    if user_input == "Feature<3":
+        await update.message.reply_text("I love you, Master<3", reply_markup=onlymainmenu)
 
 
 
-    if user_input == "Удалить задачу":
+    if user_input == "Delete task":
         tasks = context.user_data.get('tasks', [])
         if not tasks:
             await update.message.reply_text("У вас пока нет задач, Господин.", reply_markup=firstmenu)
         else:
             task_list = "\n\n".join(f"{i + 1}. {t}" for i, t in enumerate(tasks))
             await update.message.reply_text(
-                f"Ваши задачи:\n\n{task_list}\n\nВведите номер задачи, которую хотите удалить:")
+                f"Your tasks:\n\n{task_list}\n\nEnter task's number that you want to delete:")
             context.user_data['task_step'] = 'delete'
         return
 
@@ -86,48 +81,48 @@ async def tasking(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             if 0 <= index < len(tasks):
                 removed = tasks.pop(index)
-                await update.message.reply_text(f"✅ Удалена задача:\n{removed}", reply_markup=firstmenu)
+                await update.message.reply_text(f"✅ Taskdeleted:\n{removed}", reply_markup=firstmenu)
             else:
-                await update.message.reply_text("❌ Неверный номер задачи, Господин. Попробуйте снова.")
+                await update.message.reply_text("❌ Invalid task number, Master. Please try again.")
         except ValueError:
-            await update.message.reply_text("❌ Введите, пожалуйста, номер — число, Господин.")
+            await update.message.reply_text("❌ Please enter the number, Master.")
 
-        context.user_data['task_step'] = None  # сброс
+        context.user_data['task_step'] = None  # draw
         return
 
-    if user_input == "Просмотреть задачи":
+    if user_input == "Show tasks":
         tasks = context.user_data.get('tasks', [])
         if not tasks:
-            await update.message.reply_text("У вас пока нет задач, Господин 🫡", reply_markup=firstmenu)
+            await update.message.reply_text("You've got no tasks, Master 🫡", reply_markup=firstmenu)
         else:
             msg = "\n\n".join(f"{i + 1}. {t}" for i, t in enumerate(tasks))
-            await update.message.reply_text(f"Ваши задачи:\n\n{msg}", reply_markup=firstmenu)
+            await update.message.reply_text(f"Your tasks:\n\n{msg}", reply_markup=firstmenu)
         return
 
-    # 🟢 Шаг 1 — начало: пользователь нажал кнопку
-    if user_input == "Дать задачу":
-        await update.message.reply_text("Опишите задачку, Господин!")
+    # 🟢 Step 1 — the beginning: user pressed the button
+    if user_input == "Set task":
+        await update.message.reply_text("Describe the task, Master!")
         context.user_data['task_step'] = 'value'
         return
 
-    # 🟠 Шаг 2 — пользователь вводит описание
+    # 🟠 Step 2 - User enters description
     if step == 'value':
         context.user_data['task_value'] = user_input
         context.user_data['task_step'] = 'date'
-        await update.message.reply_text("Введите срок выполнения задачи (например, 2025-07-15):")
+        await update.message.reply_text("Enter the deadline for the task completion (e.g, 2025-07-15):")
         return
 
-    # 🟡 Шаг 3 — пользователь вводит дату
+    # 🟡 Step 3 - User enters the date
     if step == 'date':
         context.user_data['task_date'] = user_input
         context.user_data['task_step'] = 'comment'
-        await update.message.reply_text("Теперь введите комментарий или дополнительную информацию:")
+        await update.message.reply_text("Enter your comment or an additional description:")
         return
 
-    # 🔵 Шаг 4 — комментарий + создание задачи
+    # 🔵 Step 4 - Comment + task creation
     if step == 'comment':
         context.user_data['task_comment'] = user_input
-        context.user_data['task_step'] = None  # Сброс состояния
+        context.user_data['task_step'] = None  # Draw the state
 
         task = Task(
             value=context.user_data['task_value'],
@@ -135,13 +130,13 @@ async def tasking(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_input=context.user_data['task_comment']
         )
 
-        # Сохраняем задачу в список
+        # Saving task to te LIST
         if 'tasks' not in context.user_data:
             context.user_data['tasks'] = []
         context.user_data['tasks'].append(task)
 
         await update.message.reply_text(
-            f"✅ Задача создана, Господин:\n\n{task}",
+            f"✅ Task created, Master!:\n\n{task}",
             reply_markup=firstmenu
         )
         return
