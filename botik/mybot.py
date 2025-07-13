@@ -66,7 +66,7 @@ async def tasking(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_input == "Delete task":
         tasks = context.user_data.get('tasks', [])
         if not tasks:
-            await update.message.reply_text("У вас пока нет задач, Господин.", reply_markup=firstmenu)
+            await update.message.reply_text("You've got no tasks, Master!", reply_markup=firstmenu)
         else:
             task_list = "\n\n".join(f"{i + 1}. {t}" for i, t in enumerate(tasks))
             await update.message.reply_text(
