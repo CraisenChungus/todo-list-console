@@ -143,7 +143,7 @@ async def tasking(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token('8050992129:AAHavgyM320ilerfmo3LOkc2wkmNy3hBwTM').build()
+    application = ApplicationBuilder().token('YOUR TOKEN').build()
     # echo_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), echo)
     tasking_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), tasking)
     application.add_handler(tasking_handler)
